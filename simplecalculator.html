@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <style>
+      body {
+        background-color: rgba(245, 60, 245, 0.281);
+      }
+
+      .calc {
+        margin: auto;
+        background-color: black;
+        border: 2px solid whitesmoke;
+        width: 20%;
+        height: 650px;
+        border-radius: 20px;
+        box-shadow: 10px 10px 40px;
+      }
+
+      .maininput {
+        background-color: black;
+        border: 1px solid grey;
+        height: 115px;
+        width: 98.2%;
+        font-size: 80px;
+        color: whitesmoke;
+        font-weight: 400;
+      }
+
+      .numbtn,
+      .calbtn,
+      .c,
+      .equal,
+      .expo {
+        padding: 30px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: x-large;
+      }
+
+      .numbtn {
+        background-color: gray;
+      }
+
+      .numbtn:hover {
+        background-color: rgb(93, 93, 93);
+        color: whitesmoke;
+      }
+
+      .calbtn,
+      .expo {
+        background-color: orange;
+      }
+
+      .calbtn:hover,
+      .expo:hover {
+        background-color: rgb(195, 128, 3);
+        color: whitesmoke;
+      }
+
+      .expo {
+        font-size: large;
+        padding: 20px 25px;
+      }
+
+      .c {
+        background-color: rgb(237, 55, 55);
+      }
+
+      .c:hover {
+        background-color: rgb(160, 37, 37);
+        color: whitesmoke;
+      }
+
+      .equal {
+        background-color: green;
+      }
+
+      .equal:hover {
+        background-color: rgb(1, 80, 1);
+        color: whitesmoke;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="calc">
+      <form action="" method="post">
+        <br />
+        <input
+          type="text"
+          class="maininput"
+          name="input"
+          value=""
+        /><br /><br />
+        <input type="button" class="expo" name="exponential" value="x^2" />
+        <input type="button" class="expo" name="exponential" value="x^3" />
+        <input type="button" class="calbtn" name="op" style="padding: 20px 25px;font-size: large;" value="x^y" />
+        <input type="button" class="calbtn" name="op" value="%" /><br />
+        <input type="button" class="numbtn" name="num" value="7" />
+        <input type="button" class="numbtn" name="num" value="8" />
+        <input type="button" class="numbtn" name="num" value="9" />
+        <input type="button" class="calbtn" name="op" value="+" /><br />
+        <input type="button" class="numbtn" name="num" value="4" />
+        <input type="button" class="numbtn" name="num" value="5" />
+        <input type="button" class="numbtn" name="num" value="6" />
+        <input type="button" class="calbtn" name="op" value="-" /><br />
+        <input type="button" class="numbtn" name="num" value="1" />
+        <input type="button" class="numbtn" name="num" value="2" />
+        <input type="button" class="numbtn" name="num" value="3" />
+        <input type="button" class="calbtn" name="op" value="*" /><br />
+        <input type="button" class="c" name="c" value="C" />
+        <input type="button" class="numbtn" name="num" value="0" />
+        <input type="button" class="equal" name="equal" value="=" />
+        <input type="button" class="calbtn" name="op" value="/" />
+      </form>
+    </div>
+    <script>
+      function sendFormData(formData) {
+        fetch("calculator.php", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: new URLSearchParams(formData),
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            if (data) {
+              document.querySelector(".maininput").value = data;
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      document.querySelectorAll(".numbtn").forEach((button) => {
+        button.addEventListener("click", function () {
+          document.querySelector(".maininput").value += this.value;
+          sendFormData({
+            num: parseInt(document.querySelector(".maininput").value),
+          });
+        });
+      });
+
+      document.querySelectorAll(".calbtn").forEach((button) => {
+        button.addEventListener("click", function () {
+          sendFormData({
+            op: this.value,
+            input: document.querySelector(".maininput").value,
+          });
+          document.querySelector(".maininput").value = "";
+        });
+      });
+
+      document.querySelectorAll(".expo").forEach((button) => {
+        button.addEventListener("click", function () {
+          sendFormData({
+            exponential: this.value,
+            input: document.querySelector(".maininput").value,
+          });
+        });
+      });
+
+      document.querySelectorAll(".equal").forEach((button) => {
+        button.addEventListener("click", function () {
+          sendFormData({
+            equal: this.value,
+            input: document.querySelector(".maininput").value,
+          });
+        });
+      });
+
+      document.querySelectorAll(".c").forEach((button) => {
+        button.addEventListener("click", function () {
+          sendFormData({
+            c: null,
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
